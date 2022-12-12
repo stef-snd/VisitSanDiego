@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\app",
+    "\\app\\pages",
+    "\\app\\pages\\esri-map",
+    "\\app\\services",
+    "\\app\\services\\database"
+  ],
+  "SelectedNode": "\\app\\pages\\esri-map\\esri-map.component.ts",
+  "PreviewInSolutionExplorer": false
+}
