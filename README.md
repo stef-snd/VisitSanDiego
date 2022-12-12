@@ -2,7 +2,6 @@
 
 Steps to run the project locally: 
 - In the folder with the project open a terminal and run the cmd : 
-comanda: 
 ```
 npm install
 ```
