@@ -9,7 +9,6 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 
-import { FirebaseService } from './services/database/firebase';
 import { FirebaseMockService } from './services/database/firebase-mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -36,7 +35,6 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     AngularFireDatabaseModule
   ],
   providers: [
-    FirebaseService,
     FirebaseMockService
   ],
   bootstrap: [AppComponent]

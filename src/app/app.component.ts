@@ -28,7 +28,7 @@ export class AppComponent {
     this.router.events.subscribe((event: Event) => {
       if (event instanceof NavigationEnd) {
         this.activeTab = event.url;
-        console.log(event);
+        // console.log(event);
       }
     });
   }
