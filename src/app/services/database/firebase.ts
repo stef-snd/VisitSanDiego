@@ -1,5 +1,5 @@
 import {AngularFireDatabase, AngularFireList, AngularFireObject} from '@angular/fire/compat/database';
-import {from, map, Observable} from "rxjs";
+import {from, map, Observable, tap} from "rxjs";
 import {Inject, Injectable} from "@angular/core";
 import {User} from "./types";
 
@@ -36,6 +36,13 @@ export class FirebaseService<T> {
 
     public delete(key: string): Observable<void> {
       return from(this.findReference(key).remove())
+    }
+
+    public find(func): Observable<{entity: T, key: string}> {
+      return this.findAll().pipe(
+        tap(console.log),
+        map(data => data.find(func))
+      )
     }
 
     private findReference(key: string): AngularFireObject<T> {

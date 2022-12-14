@@ -1,0 +1,16 @@
+<nav mat-tab-nav-bar [tabPanel]="tabPanel">
+  <div style="display: flex; justify-content: space-between; width: 100%; align-items: center">
+
+    <div>
+      <a mat-tab-link *ngFor="let tab of tabs" (click)="activeTab = tab.link" [active]="activeTab == tab.link"
+         [routerLink]="tab.link">{{tab.name}}</a>
+    </div>
+
+    <div *ngIf="(isLogged$ | async) !== null">
+      <a style="margin-right: 15px" [routerLink]="'/login'"><button mat-flat-button color="primary">Login</button></a>
+    </div>
+  </div>
+
+</nav>
+<mat-tab-nav-panel #tabPanel></mat-tab-nav-panel>
+
