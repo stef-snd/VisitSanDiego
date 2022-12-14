@@ -9,7 +9,6 @@ import { environment } from '../environments/environment';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 
-import { FirebaseService } from './services/database/firebase';
 import { FirebaseMockService } from './services/database/firebase-mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -19,10 +18,15 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { HeaderComponent } from './components/header/header.component';
+import { LoginComponent } from './pages/login/login.component';
+import {MatInputModule} from "@angular/material/input";
+import {ReactiveFormsModule} from "@angular/forms";
+import { RegisterComponent } from './pages/register/register.component';
 
 
 @NgModule({
-  declarations: [AppComponent, EsriMapComponent],
+  declarations: [AppComponent, EsriMapComponent, HeaderComponent, LoginComponent, RegisterComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -33,10 +37,11 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatListModule,
     FlexLayoutModule,
     AngularFireModule.initializeApp(environment.firebase, 'AngularDemoArcGIS'),
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
+    MatInputModule,
+    ReactiveFormsModule
   ],
   providers: [
-    FirebaseService,
     FirebaseMockService
   ],
   bootstrap: [AppComponent]

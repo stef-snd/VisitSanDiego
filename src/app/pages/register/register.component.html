@@ -1,0 +1,29 @@
+<form [formGroup]="form" (ngSubmit)="register()">
+  <mat-form-field class="full-w">
+    <input matInput placeholder="First name" formControlName="firstName">
+  </mat-form-field>
+
+  <mat-form-field class="full-w">
+    <input matInput placeholder="Last name" formControlName="lastName">
+  </mat-form-field>
+
+  <mat-form-field class="full-w">
+    <input matInput placeholder="Phone" formControlName="phone">
+  </mat-form-field>
+
+  <mat-form-field class="full-w">
+    <input matInput placeholder="Email" formControlName="email">
+  </mat-form-field>
+
+  <mat-form-field class="full-w">
+    <input matInput placeholder="Password" type="password" formControlName="password">
+  </mat-form-field>
+
+  <div *ngIf="error" style="display: flex; align-items: center; justify-content: center; margin-top: 20px; color: red">
+    {{error}}
+  </div>
+
+  <div style="display: flex; align-items: center; justify-content: center; margin-top: 20px">
+    <button mat-flat-button color="primary" style="margin: auto">Register</button>
+  </div>
+</form>

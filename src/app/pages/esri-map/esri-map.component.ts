@@ -20,8 +20,8 @@ import {
 } from "@angular/core";
 import { setDefaultOptions, loadModules } from 'esri-loader';
 import { Subscription } from "rxjs";
-import { FirebaseService, ITestItem } from "src/app/services/database/firebase";
-import { FirebaseMockService } from "src/app/services/database/firebase-mock";
+// import { FirebaseService, ITestItem } from "src/app/services/database/firebase";
+// import { FirebaseMockService } from "src/app/services/database/firebase-mock";
 import esri = __esri; // Esri TypeScript Types
 
 @Component({
@@ -67,7 +67,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   subscriptionObj: Subscription;
 
   constructor(
-    private fbs: FirebaseService
+    // private fbs: FirebaseService
    // private fbs: FirebaseMockService
   ) { }
 
@@ -174,7 +174,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
     console.log("feature layers added");
   }
 
-  addPoint(lat: number, lng: number, register: boolean) {   
+  addPoint(lat: number, lng: number, register: boolean) {
     const point = { //Create a point
       type: "point",
       longitude: lng,
@@ -251,27 +251,27 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   }
 
   connectFirebase() {
-    if (this.isConnected) {
-      return;
-    }
-    this.isConnected = true;
-    this.fbs.connectToDatabase();
-    this.subscriptionList = this.fbs.getChangeFeedList().subscribe((items: ITestItem[]) => {
-      console.log("got new items from list: ", items);
-      this.graphicsLayer.removeAll();
-      for (let item of items) {
-        this.addPoint(item.lat, item.lng, false);
-        this.fbs.syncPointItem(this.view.center.latitude, this.view.center.longitude);
-      }
-    });
-    this.subscriptionObj = this.fbs.getChangeFeedObj().subscribe((stat: ITestItem[]) => {
-      console.log("item updated from object: ", stat);
-    });
+    // if (this.isConnected) {
+    //   return;
+    // }
+    // this.isConnected = true;
+    // this.fbs.connectToDatabase();
+    // this.subscriptionList = this.fbs.getChangeFeedList().subscribe((items: ITestItem[]) => {
+    //   console.log("got new items from list: ", items);
+    //   this.graphicsLayer.removeAll();
+    //   for (let item of items) {
+    //     this.addPoint(item.lat, item.lng, false);
+    //     this.fbs.syncPointItem(this.view.center.latitude, this.view.center.longitude);
+    //   }
+    // });
+    // this.subscriptionObj = this.fbs.getChangeFeedObj().subscribe((stat: ITestItem[]) => {
+    //   console.log("item updated from object: ", stat);
+    // });
   }
 
   addPointItem() {
-    console.log("Map center: " + this.view.center.latitude + ", " + this.view.center.longitude);
-    this.fbs.addPointItem(this.view.center.latitude, this.view.center.longitude);
+    // console.log("Map center: " + this.view.center.latitude + ", " + this.view.center.longitude);
+    // this.fbs.addPointItem(this.view.center.latitude, this.view.center.longitude);
   }
 
   disconnectFirebase() {

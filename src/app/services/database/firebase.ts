@@ -1,51 +1,71 @@
-import { Injectable } from '@angular/core';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { Observable } from 'rxjs';
+import {AngularFireDatabase, AngularFireList, AngularFireObject} from '@angular/fire/compat/database';
+import {from, map, Observable, tap} from "rxjs";
+import {Inject, Injectable} from "@angular/core";
+import {User} from "./types";
 
-export interface ITestItem {
-    name: string,
-    lat: number,
-    lng: number
+export const FIREBASE_OBJECT_KEY = 'FIREBASE_OBJECT_KEY';
+
+export class FirebaseService<T> {
+
+    protected readonly list: AngularFireList<T>;
+
+    constructor(protected readonly db: AngularFireDatabase,
+                @Inject(FIREBASE_OBJECT_KEY) protected readonly objKey) {
+      this.list = this.db.list<T>(this.objKey);
+    }
+
+    public create(entity: T): Observable<{entity: T, key: string}> {
+      return from(this.list.push(entity)).pipe(
+        map(({ key }) => ({ key, entity }))
+      )
+    }
+
+    public findByKey(key: string): Observable<T> {
+      return this.findReference(key).valueChanges();
+    }
+
+    public findAll(): Observable<{entity: T, key: string}[]> {
+      return this.list.snapshotChanges().pipe(
+        map(snapshot => snapshot.map(data => ({key: data.key, entity: data.payload.val()})))
+      );
+    }
+
+    public update(key: string, entity: T): Observable<void> {
+      return from(this.findReference(key).update(entity));
+    }
+
+    public delete(key: string): Observable<void> {
+      return from(this.findReference(key).remove())
+    }
+
+    public find(func): Observable<{entity: T, key: string}> {
+      return this.findAll().pipe(
+        tap(console.log),
+        map(data => data.find(func))
+      )
+    }
+
+    private findReference(key: string): AngularFireObject<T> {
+      return this.db.object<T>(`${this.objKey}/${key}`)
+    }
 }
 
-@Injectable()
-export class FirebaseService {
+@Injectable({
+  providedIn: "root",
+})
+export class UserService extends FirebaseService<User> {
 
-    listFeed: Observable<any[]>;
-    objFeed: Observable<any>;
+  constructor(protected readonly db: AngularFireDatabase) {
+    super(db, "users");
+  }
+}
 
-    constructor(public db: AngularFireDatabase) {
+@Injectable({
+  providedIn: "root",
+})
+export class LocationService extends FirebaseService<Location> {
 
-    }
-
-    connectToDatabase() {
-        this.listFeed = this.db.list('list').valueChanges();
-        this.objFeed = this.db.object('obj').valueChanges();
-    }
-
-    getChangeFeedList() {
-        return this.listFeed;
-    }
-
-    getChangeFeedObj() {
-        return this.objFeed;
-    }
-
-    addPointItem(lat: number, lng: number) {
-        let item: ITestItem = {
-            name: "test",
-            lat: lat,
-            lng: lng
-        };
-        this.db.list('list').push(item);
-    }
-
-    syncPointItem(lat: number, lng: number) {
-        let item: ITestItem = {
-            name: "test",
-            lat: lat,
-            lng: lng
-        };
-        this.db.object('obj').set([item]);
-    }
+  constructor(protected readonly db: AngularFireDatabase) {
+    super(db, "locations");
+  }
 }
