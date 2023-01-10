@@ -163,23 +163,6 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   }
 
   addFeatureLayers() {
-    // Trailheads feature layer (points)
-    var trailheadsLayer: __esri.FeatureLayer = new this._FeatureLayer({
-      url:
-        "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trailheads/FeatureServer/0"
-    });
-
-    this.map.add(trailheadsLayer);
-
-    // Trails feature layer (lines)
-    var trailsLayer: __esri.FeatureLayer = new this._FeatureLayer({
-      url:
-        "https://services3.arcgis.com/GVgbJbqm8hXASVYi/arcgis/rest/services/Trails/FeatureServer/0"
-    });
-
-    this.map.add(trailsLayer, 0);
-
-    // Parks and open spaces (polygons)
     var cityOfSanDiegoRoads: __esri.FeatureLayer = new this._FeatureLayer({
       url:
         "https://services8.arcgis.com/KciNm1Iv5DgViAnE/arcgis/rest/services/City_of_San_Diego_Roads/FeatureServer"
