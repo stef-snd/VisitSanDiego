@@ -22,6 +22,7 @@ import {
   OnDestroy
 } from "@angular/core";
 import { setDefaultOptions, loadModules } from 'esri-loader';
+import { Point } from "esri/geometry";
 import { Subscription } from "rxjs";
 // import { FirebaseService, ITestItem } from "src/app/services/database/firebase";
 // import { FirebaseMockService } from "src/app/services/database/firebase-mock";
@@ -57,7 +58,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   // Attributes
   zoom = 10;
   center: Array<number> = [-117.161087, 32.715736];
-  basemap = "streets-vector";
+  basemap = "arcgis-navigation";
   loaded = false;
   pointCoords: number[] = [-117.161087, 32.715736];
   dir: number = 0;
@@ -71,7 +72,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
 
   constructor(
     // private fbs: FirebaseService
-   // private fbs: FirebaseMockService
+    // private fbs: FirebaseMockService
   ) { }
 
   async initializeMap() {
@@ -81,7 +82,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
       setDefaultOptions({ css: true });
 
       // Load the modules for the ArcGIS API for JavaScript
-      const [esriConfig, Map, MapView, FeatureLayer, Graphic, Point, GraphicsLayer, route, RouteParameters, FeatureSet] = await loadModules([
+      const [esriConfig, Map, MapView, FeatureLayer, Graphic, Point, GraphicsLayer, route, RouteParameters, FeatureSet, Search] = await loadModules([
         "esri/config",
         "esri/Map",
         "esri/views/MapView",
@@ -91,7 +92,8 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         "esri/layers/GraphicsLayer",
         "esri/rest/route",
         "esri/rest/support/RouteParameters",
-        "esri/rest/support/FeatureSet"
+        "esri/rest/support/FeatureSet",
+        "esri/widgets/Search"
       ]);
 
       esriConfig.apiKey = "AAPKce79efafa9074f87a8e2a607b5ecb2d7RleSnQZAUk01Hkse_K3ZHGBWFdsfmOZCqaRpsBlFL6J1k48s5qCwbSgg9hNsQ2Ey";
@@ -138,12 +140,22 @@ export class EsriMapComponent implements OnInit, OnDestroy {
       await this.view.when(); // wait for map to load
       console.log("ArcGIS map loaded");
       this.addRouter()
+
+      const search = new Search({
+        view: this.view
+      });
+
+      this.view.ui.add(search, "top-right");
+
+      var point = this.pointCoords
+      this.findPlace(point)
       console.log("Map center: " + this.view.center.latitude + ", " + this.view.center.longitude);
       return this.view;
     } catch (error) {
       console.log("EsriLoader: ", error);
     }
   }
+
 
   addGraphicLayers() {
     this.graphicsLayer = new this._GraphicsLayer();
@@ -173,7 +185,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         "https://services8.arcgis.com/KciNm1Iv5DgViAnE/arcgis/rest/services/City_of_San_Diego_Roads/FeatureServer"
     });
 
-    this.map.add(cityOfSanDiegoRoads, 0);
+    this.map.add(cityOfSanDiegoRoads, -1);
 
     console.log("feature layers added");
   }
@@ -220,6 +232,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         addGraphic("destination", event.mapPoint);
         getRoute(); // Call the route service
       } else {
+        this.view.ui.empty("bottom-right");
         this.view.graphics.removeAll();
         //addGraphic("origin", event.mapPoint);
       }
@@ -275,8 +288,8 @@ export class EsriMapComponent implements OnInit, OnDestroy {
           sum = sum * 1.609344;
           console.log('dist (km) = ', sum);
 
-          this.view.ui.empty("top-right");
-          this.view.ui.add(directions, "top-right");
+          this.view.ui.empty("bottom-right");
+          this.view.ui.add(directions, "bottom-right");
 
         }
 
@@ -285,6 +298,56 @@ export class EsriMapComponent implements OnInit, OnDestroy {
       });
     }
   }
+
+  findPlace(pt) {
+    const geocodingServiceUrl = "http://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer";
+
+    const params = {
+      address: {
+        address: "Starbucks"
+      },
+      location: pt,  // San Francisco (-122.4194, 37.7749)
+      outFields: ["PlaceName", "Place_addr"]
+    }
+
+    this._locator.addressToLocations(geocodingServiceUrl, params).then((results) => {
+      this.showResults(results);
+    });
+
+  }
+
+  showResults(results) {
+    this.view.popup.close();
+    this.view.graphics.removeAll();
+    results.forEach((result) => {
+      this.view.graphics.add(
+        new this._Graphic({
+          attributes: result.attributes,
+          geometry: result.location,
+          symbol: {
+            type: "simple-marker",
+            color: "black",
+            size: "10px",
+            outline: {
+              color: "#ffffff",
+              width: "2px"
+            }
+          },
+          popupTemplate: {
+            title: "{PlaceName}",
+            content: "{Place_addr}" + "<br><br>" + result.location.x.toFixed(5) + "," + result.location.y.toFixed(5)
+          }
+        }));
+    });
+    if (results.length) {
+      const g = this.view.graphics.getItemAt(0);
+      this.view.popup.open({
+        features: [g],
+        location: g.geometry
+      });
+    }
+  }
+
 
   runTimer() {
     this.timeoutHandler = setTimeout(() => {
