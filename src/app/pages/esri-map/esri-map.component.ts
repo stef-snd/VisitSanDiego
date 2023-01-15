@@ -82,7 +82,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
       setDefaultOptions({ css: true });
 
       // Load the modules for the ArcGIS API for JavaScript
-      const [esriConfig, Map, MapView, FeatureLayer, Graphic, Point, GraphicsLayer, route, RouteParameters, FeatureSet, Search] = await loadModules([
+      const [esriConfig, Map, MapView, FeatureLayer, Graphic, Point, GraphicsLayer, route, RouteParameters, FeatureSet, Search, LayerList] = await loadModules([
         "esri/config",
         "esri/Map",
         "esri/views/MapView",
@@ -93,7 +93,8 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         "esri/rest/route",
         "esri/rest/support/RouteParameters",
         "esri/rest/support/FeatureSet",
-        "esri/widgets/Search"
+        "esri/widgets/Search",
+        "esri/widgets/LayerList"
       ]);
 
       esriConfig.apiKey = "AAPKce79efafa9074f87a8e2a607b5ecb2d7RleSnQZAUk01Hkse_K3ZHGBWFdsfmOZCqaRpsBlFL6J1k48s5qCwbSgg9hNsQ2Ey";
@@ -116,7 +117,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
       this.map = new Map(mapProperties);
 
       this.addFeatureLayers();
-      this.addGraphicLayers();
+      this.map.layers.add(this.addGraphicLayers(), -1);
 
       //this.addPoint(this.pointCoords[1], this.pointCoords[0], true);
 
@@ -147,6 +148,14 @@ export class EsriMapComponent implements OnInit, OnDestroy {
 
       this.view.ui.add(search, "top-right");
 
+
+      let layerList = new LayerList({
+        view: this.view
+      });
+      this.view.ui.add(layerList, {
+        position: "bottom-left",
+      });
+
       var point = this.pointCoords
       this.findPlace(point)
       console.log("Map center: " + this.view.center.latitude + ", " + this.view.center.longitude);
@@ -158,14 +167,175 @@ export class EsriMapComponent implements OnInit, OnDestroy {
 
 
   addGraphicLayers() {
-    this.graphicsLayer = new this._GraphicsLayer();
-    this.map.add(this.graphicsLayer);
+    var pointGraphic1= new this._Graphic({
+      attributes: {
+        address: "2920 Zoo Dr, San Diego, CA 92101, Statele Unite ale Americii"
+      },
+      geometry: {
+        type: "point",                    
+        longitude: -117.150894,
+        latitude: 32.733603
+      },
+      symbol: {
+        type: "simple-marker",            
+        color: [ 226, 119, 40 ],
+        outline: {                         
+          color: [ 255, 255, 255 ],
+          width: 2
+        }
+      },
+      popupTemplate: {                   
+        title: "Zoo",
+        content: [{
+          type: "fields",
+          fieldInfos: [
+            {
+              fieldName: "address",
+              label: "Address",
+              visible: true
+            }
+          ]
+        }]
+      },
+    });
+    var pointGraphic2= new this._Graphic({
+      attributes: {
+        address: "500 Sea World Dr., San Diego, CA 92109, Statele Unite ale Americii"
+      },
+      geometry: {
+        type: "point",                    
+        longitude: -117.227798,
+        latitude: 32.761612
+      },
+      symbol: {
+        type: "simple-marker",            
+        color: [ 226, 119, 40 ],
+        outline: {                         
+          color: [ 255, 255, 255 ],
+          width: 2
+        }
+      },
+      popupTemplate: {                   
+        title: "SeaWorld San Diego",
+        content: [{
+          type: "fields",
+          fieldInfos: [
+            {
+              fieldName: "address",
+              label: "Address",
+              visible: true
+            }
+          ]
+        }]
+      },
+    });
+    var pointGraphic3= new this._Graphic({
+      attributes: {
+        address: "San Diego, California 92037, Statele Unite ale Americii"
+      },
+      geometry: {
+        type: "point",                    
+        longitude:  -117.272834,
+        latitude:  32.850215
+      },
+      symbol: {
+        type: "simple-marker",            
+        color: [ 226, 119, 40 ],
+        outline: {                         
+          color: [ 255, 255, 255 ],
+          width: 2
+        }
+      },
+      popupTemplate: {                   
+        title: "La Jolla Cove",
+        content: [{
+          type: "fields",
+          fieldInfos: [
+            {
+              fieldName: "address",
+              label: "Address",
+              visible: true
+            }
+          ]
+        }]
+      },
+    });
+    var pointGraphic4= new this._Graphic({
+      attributes: {
+        address: "910 N Harbor Dr, San Diego, CA 92101, Statele Unite ale Americii"
+      },
+      geometry: {
+        type: "point",                    
+        longitude:   -117.172275,
+        latitude:  32.712918
+      },
+      symbol: {
+        type: "simple-marker",            
+        color: [ 226, 119, 40 ],
+        outline: {                         
+          color: [ 255, 255, 255 ],
+          width: 2
+        }
+      },
+      popupTemplate: {                   
+        title: "USS Midway Museum",
+        content: [{
+          type: "fields",
+          fieldInfos: [
+            {
+              fieldName: "address",
+              label: "Address",
+              visible: true
+            }
+          ]
+        }]
+      },
+    });
+    var pointGraphic5= new this._Graphic({
+      attributes: {
+        address: "1800 Cabrillo Memorial Dr, San Diego, CA 92106, Statele Unite ale Americii"
+      },
+      geometry: {
+        type: "point",                    
+        longitude:   -117.241345,
+        latitude:  32.669089
+      },
+      symbol: {
+        type: "simple-marker",            
+        color: [ 226, 119, 40 ],
+        outline: {                         
+          color: [ 255, 255, 255 ],
+          width: 2
+        }
+      },
+      popupTemplate: {                   
+        title: "Cabrillo National Monument",
+        content: [{
+          type: "fields",
+          fieldInfos: [
+            {
+              fieldName: "address",
+              label: "Address",
+              visible: true
+            }
+          ]
+        }]
+      },
+    });
+
+    var graphicsLayer = new this._GraphicsLayer({
+      graphics: [ pointGraphic1, pointGraphic2, pointGraphic3, pointGraphic4, pointGraphic5 ],
+      title: "Atractions of San Diego"
+    });
+    
+      return graphicsLayer;
   }
 
   addFeatureLayers() {
     var cityOfSanDiegoRoads: __esri.FeatureLayer = new this._FeatureLayer({
       url:
-        "https://services8.arcgis.com/KciNm1Iv5DgViAnE/arcgis/rest/services/City_of_San_Diego_Roads/FeatureServer"
+        "https://services8.arcgis.com/KciNm1Iv5DgViAnE/arcgis/rest/services/City_of_San_Diego_Roads/FeatureServer",
+        title: "Roads of San Diego"
     });
 
     this.map.add(cityOfSanDiegoRoads, -1);
