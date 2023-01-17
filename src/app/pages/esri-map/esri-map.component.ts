@@ -174,6 +174,34 @@ export class EsriMapComponent implements OnInit, OnDestroy {
 
 
   addGraphicLayers() {
+    let symbolPark = {
+      type: "picture-marker", 
+      url: "https://static.arcgis.com/images/Symbols/PeoplePlaces/Forest.png",
+      width: "40px",
+      height: "40px"
+    };
+
+    let symbolReservoir = {
+      type: "picture-marker",
+      url: "https://static.arcgis.com/images/Symbols/PeoplePlaces/Reservoir.png",
+      width: "40px",
+      height: "40px"
+    };
+
+    let symbolBeach = {
+      type: "picture-marker",
+      url: "https://static.arcgis.com/images/Symbols/OutdoorRecreation/Swimming.png",
+      width: "40px",
+      height: "40px"
+    };
+
+    let symbolMuseum = {
+      type: "picture-marker",
+      url: "http://static.arcgis.com/images/Symbols/PeoplePlaces/Museum.png",
+      width: "35px",
+      height: "35px"
+    };
+
     var pointGraphic1= new this._Graphic({
       attributes: {
         address: "2920 Zoo Dr, San Diego, CA 92101, Statele Unite ale Americii"
@@ -183,14 +211,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         longitude: -117.150894,
         latitude: 32.733603
       },
-      symbol: {
-        type: "simple-marker",            
-        color: [ 226, 119, 40 ],
-        outline: {                         
-          color: [ 255, 255, 255 ],
-          width: 2
-        }
-      },
+      symbol: symbolPark,
       popupTemplate: {                   
         title: "Zoo",
         content: [{
@@ -214,14 +235,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         longitude: -117.227798,
         latitude: 32.761612
       },
-      symbol: {
-        type: "simple-marker",            
-        color: [ 226, 119, 40 ],
-        outline: {                         
-          color: [ 255, 255, 255 ],
-          width: 2
-        }
-      },
+      symbol: symbolReservoir,
       popupTemplate: {                   
         title: "SeaWorld San Diego",
         content: [{
@@ -245,14 +259,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         longitude:  -117.272834,
         latitude:  32.850215
       },
-      symbol: {
-        type: "simple-marker",            
-        color: [ 226, 119, 40 ],
-        outline: {                         
-          color: [ 255, 255, 255 ],
-          width: 2
-        }
-      },
+      symbol: symbolBeach,
       popupTemplate: {                   
         title: "La Jolla Cove",
         content: [{
@@ -276,14 +283,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         longitude:   -117.172275,
         latitude:  32.712918
       },
-      symbol: {
-        type: "simple-marker",            
-        color: [ 226, 119, 40 ],
-        outline: {                         
-          color: [ 255, 255, 255 ],
-          width: 2
-        }
-      },
+      symbol: symbolMuseum,
       popupTemplate: {                   
         title: "USS Midway Museum",
         content: [{
@@ -307,14 +307,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         longitude:   -117.241345,
         latitude:  32.669089
       },
-      symbol: {
-        type: "simple-marker",            
-        color: [ 226, 119, 40 ],
-        outline: {                         
-          color: [ 255, 255, 255 ],
-          width: 2
-        }
-      },
+      symbol: symbolMuseum,
       popupTemplate: {                   
         title: "Cabrillo National Monument",
         content: [{
