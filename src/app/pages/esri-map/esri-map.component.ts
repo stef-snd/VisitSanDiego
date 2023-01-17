@@ -82,7 +82,8 @@ export class EsriMapComponent implements OnInit, OnDestroy {
       setDefaultOptions({ css: true });
 
       // Load the modules for the ArcGIS API for JavaScript
-      const [esriConfig, Map, MapView, FeatureLayer, Graphic, Point, GraphicsLayer, route, RouteParameters, FeatureSet, Search, LayerList] = await loadModules([
+      const [esriConfig, Map, MapView, FeatureLayer, Graphic, Point, GraphicsLayer, route, RouteParameters, FeatureSet, Search, LayerList,
+             Home] = await loadModules([
         "esri/config",
         "esri/Map",
         "esri/views/MapView",
@@ -94,7 +95,8 @@ export class EsriMapComponent implements OnInit, OnDestroy {
         "esri/rest/support/RouteParameters",
         "esri/rest/support/FeatureSet",
         "esri/widgets/Search",
-        "esri/widgets/LayerList"
+        "esri/widgets/LayerList",
+        "esri/widgets/Home"
       ]);
 
       esriConfig.apiKey = "AAPKce79efafa9074f87a8e2a607b5ecb2d7RleSnQZAUk01Hkse_K3ZHGBWFdsfmOZCqaRpsBlFL6J1k48s5qCwbSgg9hNsQ2Ey";
@@ -155,6 +157,11 @@ export class EsriMapComponent implements OnInit, OnDestroy {
       this.view.ui.add(layerList, {
         position: "bottom-left",
       });
+
+      let homeBtn = new Home({
+        view: this.view
+      });
+      this.view.ui.add(homeBtn, "top-leading");
 
       var point = this.pointCoords
       this.findPlace(point)
