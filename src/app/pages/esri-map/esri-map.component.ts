@@ -23,10 +23,12 @@ import {
 } from "@angular/core";
 import { setDefaultOptions, loadModules } from 'esri-loader';
 import { Point } from "esri/geometry";
-import { Subscription } from "rxjs";
+import {map, Observable, Subscription} from "rxjs";
 // import { FirebaseService, ITestItem } from "src/app/services/database/firebase";
 // import { FirebaseMockService } from "src/app/services/database/firebase-mock";
-import esri = __esri; // Esri TypeScript Types
+import esri = __esri;
+import GraphicsLayer = __esri.GraphicsLayer;
+import {MapLocationService} from "../../services/store/map-location.service"; // Esri TypeScript Types
 
 @Component({
   selector: "app-esri-map",
@@ -71,8 +73,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
   subscriptionObj: Subscription;
 
   constructor(
-    // private fbs: FirebaseService
-    // private fbs: FirebaseMockService
+    private mapLocationService: MapLocationService
   ) { }
 
   async initializeMap() {
@@ -119,7 +120,7 @@ export class EsriMapComponent implements OnInit, OnDestroy {
       this.map = new Map(mapProperties);
 
       this.addFeatureLayers();
-      this.map.layers.add(this.addGraphicLayers(), -1);
+      this.buildGraphicLayer().subscribe(layer => this.map.layers.add(layer, -1));
 
       //this.addPoint(this.pointCoords[1], this.pointCoords[0], true);
 
@@ -172,163 +173,13 @@ export class EsriMapComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  addGraphicLayers() {
-    let symbolPark = {
-      type: "picture-marker", 
-      url: "https://static.arcgis.com/images/Symbols/PeoplePlaces/Forest.png",
-      width: "40px",
-      height: "40px"
-    };
-
-    let symbolReservoir = {
-      type: "picture-marker",
-      url: "https://static.arcgis.com/images/Symbols/PeoplePlaces/Reservoir.png",
-      width: "40px",
-      height: "40px"
-    };
-
-    let symbolBeach = {
-      type: "picture-marker",
-      url: "https://static.arcgis.com/images/Symbols/OutdoorRecreation/Swimming.png",
-      width: "40px",
-      height: "40px"
-    };
-
-    let symbolMuseum = {
-      type: "picture-marker",
-      url: "http://static.arcgis.com/images/Symbols/PeoplePlaces/Museum.png",
-      width: "35px",
-      height: "35px"
-    };
-
-    var pointGraphic1= new this._Graphic({
-      attributes: {
-        address: "2920 Zoo Dr, San Diego, CA 92101, Statele Unite ale Americii"
-      },
-      geometry: {
-        type: "point",                    
-        longitude: -117.150894,
-        latitude: 32.733603
-      },
-      symbol: symbolPark,
-      popupTemplate: {                   
-        title: "Zoo",
-        content: [{
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "address",
-              label: "Address",
-              visible: true
-            }
-          ]
-        }]
-      },
-    });
-    var pointGraphic2= new this._Graphic({
-      attributes: {
-        address: "500 Sea World Dr., San Diego, CA 92109, Statele Unite ale Americii"
-      },
-      geometry: {
-        type: "point",                    
-        longitude: -117.227798,
-        latitude: 32.761612
-      },
-      symbol: symbolReservoir,
-      popupTemplate: {                   
-        title: "SeaWorld San Diego",
-        content: [{
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "address",
-              label: "Address",
-              visible: true
-            }
-          ]
-        }]
-      },
-    });
-    var pointGraphic3= new this._Graphic({
-      attributes: {
-        address: "San Diego, California 92037, Statele Unite ale Americii"
-      },
-      geometry: {
-        type: "point",                    
-        longitude:  -117.272834,
-        latitude:  32.850215
-      },
-      symbol: symbolBeach,
-      popupTemplate: {                   
-        title: "La Jolla Cove",
-        content: [{
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "address",
-              label: "Address",
-              visible: true
-            }
-          ]
-        }]
-      },
-    });
-    var pointGraphic4= new this._Graphic({
-      attributes: {
-        address: "910 N Harbor Dr, San Diego, CA 92101, Statele Unite ale Americii"
-      },
-      geometry: {
-        type: "point",                    
-        longitude:   -117.172275,
-        latitude:  32.712918
-      },
-      symbol: symbolMuseum,
-      popupTemplate: {                   
-        title: "USS Midway Museum",
-        content: [{
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "address",
-              label: "Address",
-              visible: true
-            }
-          ]
-        }]
-      },
-    });
-    var pointGraphic5= new this._Graphic({
-      attributes: {
-        address: "1800 Cabrillo Memorial Dr, San Diego, CA 92106, Statele Unite ale Americii"
-      },
-      geometry: {
-        type: "point",                    
-        longitude:   -117.241345,
-        latitude:  32.669089
-      },
-      symbol: symbolMuseum,
-      popupTemplate: {                   
-        title: "Cabrillo National Monument",
-        content: [{
-          type: "fields",
-          fieldInfos: [
-            {
-              fieldName: "address",
-              label: "Address",
-              visible: true
-            }
-          ]
-        }]
-      },
-    });
-
-    var graphicsLayer = new this._GraphicsLayer({
-      graphics: [ pointGraphic1, pointGraphic2, pointGraphic3, pointGraphic4, pointGraphic5 ],
-      title: "Atractions of San Diego"
-    });
-    
-      return graphicsLayer;
+  buildGraphicLayer(): Observable<GraphicsLayer> {
+    return this.mapLocationService.fetchLocations().pipe(
+      map(locations => new this._GraphicsLayer({
+        graphics: locations,
+        title: "Attractions of Sand Diego"
+      }))
+    );
   }
 
   addFeatureLayers() {

@@ -7,10 +7,10 @@ export interface User {
 }
 
 export interface Location {
-  locationLat: number;
-  locationLong: number;
-  userId: string;
-  description: string;
-  locationName: string;
+  address: string;
   type: string;
+  longitude: number;
+  latitude: number;
+  symbol: string;
+  title: string;
 }
