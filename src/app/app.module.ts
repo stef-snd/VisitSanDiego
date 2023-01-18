@@ -23,10 +23,12 @@ import { LoginComponent } from './pages/login/login.component';
 import {MatInputModule} from "@angular/material/input";
 import {ReactiveFormsModule} from "@angular/forms";
 import { RegisterComponent } from './pages/register/register.component';
-
+import { AddLocationComponent } from './components/add-location/add-location.component';
+import {MatSelectModule} from "@angular/material/select";
+import {MatDialogModule} from "@angular/material/dialog";
 
 @NgModule({
-  declarations: [AppComponent, EsriMapComponent, HeaderComponent, LoginComponent, RegisterComponent],
+  declarations: [AppComponent, EsriMapComponent, HeaderComponent, LoginComponent, RegisterComponent, AddLocationComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -39,7 +41,9 @@ import { RegisterComponent } from './pages/register/register.component';
     AngularFireModule.initializeApp(environment.firebase, 'AngularDemoArcGIS'),
     AngularFireDatabaseModule,
     MatInputModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatSelectModule,
+    MatDialogModule,
   ],
   providers: [
     FirebaseMockService

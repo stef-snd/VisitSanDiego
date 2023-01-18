@@ -1,0 +1,32 @@
+<form class="example-form" [formGroup]="form" (ngSubmit)="addLocation()">
+  <mat-form-field style="width: 100%">
+    <mat-label>Title</mat-label>
+    <input matInput formControlName="title"/>
+  </mat-form-field>
+
+  <mat-form-field style="width: 100%">
+    <mat-label>Address</mat-label>
+    <input matInput formControlName="address"/>
+  </mat-form-field>
+
+  <mat-form-field style="width: 100%">
+    <mat-label>Longitude</mat-label>
+    <input type="number" matInput formControlName="longitude"/>
+  </mat-form-field>
+
+  <mat-form-field style="width: 100%">
+    <mat-label>Latitude</mat-label>
+    <input type="number" matInput formControlName="latitude"/>
+  </mat-form-field>
+
+  <mat-form-field style="width: 100%">
+    <mat-label>Type</mat-label>
+    <mat-select [formControl]="form.controls.symbol">
+      <mat-option *ngFor="let type of ['park', 'reservoir', 'beach', 'museum']" [value]="type">
+        {{type}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-raised-button>Add location</button>
+</form>

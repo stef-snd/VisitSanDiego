@@ -19,11 +19,7 @@ export class AuthService {
   }
 
   public register(user: User & {password: string}): Observable<void> {
-    console.log(user)
-
     const {password, ...entity} = user;
-
-    console.log(entity)
 
     return from(this.auth.createUserWithEmailAndPassword(user.email, user.password)).pipe(
       switchMap(() => this.userService.create(entity)),
@@ -36,5 +32,9 @@ export class AuthService {
       switchMap(() => this.userService.find(data => data.entity.email === email)),
       map(user => this._currentUser$.next(user.entity))
     )
+  }
+
+  public logout(): void {
+    this.auth.signOut().then(() => this._currentUser$.next(null));
   }
 }

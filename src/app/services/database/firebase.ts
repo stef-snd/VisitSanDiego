@@ -1,7 +1,7 @@
 import {AngularFireDatabase, AngularFireList, AngularFireObject} from '@angular/fire/compat/database';
 import {from, map, Observable, tap} from "rxjs";
 import {Inject, Injectable} from "@angular/core";
-import {User} from "./types";
+import {User, Location} from "./types";
 
 export const FIREBASE_OBJECT_KEY = 'FIREBASE_OBJECT_KEY';
 
@@ -40,7 +40,6 @@ export class FirebaseService<T> {
 
     public find(func): Observable<{entity: T, key: string}> {
       return this.findAll().pipe(
-        tap(console.log),
         map(data => data.find(func))
       )
     }
